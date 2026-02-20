@@ -1,0 +1,40 @@
+# Reglas de Arquitectura: Headless WP + Next.js Dynamic Builder
+
+## Estándares de Código
+- Framework: Next.js 14+ (App Router).
+- Lenguaje: TypeScript (Tipado estricto, evita 'any').
+- Estilos: Tailwind CSS (Mobile-first).
+- Componentes: Funcionales, con exportación nombrada.
+
+## Patrón de Diseño: Dynamic Block Renderer
+- Todos los componentes de página provenientes de WordPress deben residir en `@/components/blocks`.
+- El mapeo entre ACF y React debe centralizarse en un archivo `mapping.ts`.
+- Usa 'Next/Image' para todas las imágenes externas de WordPress configurando el dominio en next.config.js.
+
+## Seguridad y Optimización
+- Valida los datos de la API antes de renderizar.
+- Implementa Error Boundaries por cada bloque dinámico para evitar que un fallo en un componente rompa toda la página.
+- Usa `revalidatePath` o `revalidateTag` para el manejo de caché de WPGraphQL.
+
+## Convención de Nombres
+- Componentes de Bloque: [Name]Block.tsx (ej. HeroBlock.tsx).
+- Tipos de GraphQL: [Name]Fields.ts.
+
+## Estructura de carpetas
+
+├── app/
+│   ├── [...slug]/         <-- Catch-all route para páginas de WP
+│   │   └── page.tsx       <-- Aquí se llama al BlockRenderer
+│   ├── layout.tsx         <-- Aquí vive el Navbar (Menú WP)
+│   └── globals.css
+├── components/
+│   ├── blocks/            <-- Componentes que coinciden con ACF
+│   │   ├── HeroBlock.tsx
+│   │   ├── SliderBlock.tsx
+│   │   └── TextBlock.tsx
+│   ├── BlockRenderer.tsx  <-- El "Cerebro" que mapea el JSON
+│   └── Navbar.tsx         <-- Menú dinámico
+├── lib/
+│   └── wp-api.ts          <-- Cliente fetch y queries GraphQL
+└── types/
+    └── wordpress.ts       <-- Interfaces de TS para ACF y Menús
