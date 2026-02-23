@@ -1,12 +1,19 @@
 /**
  * Cliente WPGraphQL para Next.js
- * Maneja las queries y mutations de WordPress GraphQL API
+ * Usa NEXT_PUBLIC_WORDPRESS_API_URL como endpoint GraphQL.
  */
 
-const WP_GRAPHQL_URL = process.env.NEXT_PUBLIC_WP_GRAPHQL_URL || '';
+import type { PageBuilderBlock } from '@/types/wordpress';
 
-if (!WP_GRAPHQL_URL) {
-  console.warn('NEXT_PUBLIC_WP_GRAPHQL_URL no está configurado');
+const WP_GRAPHQL_URL =
+  process.env.NEXT_PUBLIC_WORDPRESS_API_URL ||
+  process.env.NEXT_PUBLIC_WP_GRAPHQL_URL ||
+  '';
+
+if (!WP_GRAPHQL_URL && typeof window === 'undefined') {
+  console.warn(
+    'NEXT_PUBLIC_WORDPRESS_API_URL (o NEXT_PUBLIC_WP_GRAPHQL_URL) no está configurado'
+  );
 }
 
 interface GraphQLResponse<T> {
@@ -68,33 +75,69 @@ export async function fetchGraphQL<T>(
 }
 
 /**
- * Query para obtener una página por slug con Flexible Content
+ * Query para obtener una página por URI con Page Builder (fragmentos Hero + Text).
+ * Compatible con la respuesta de realData.json.
  */
-export const GET_PAGE_BY_SLUG = `
-  query GetPageBySlug($slug: String!) {
-    pageBy(slug: $slug) {
-      id
-      title
-      slug
-      content
-      flexibleContent {
-        fieldGroupName
-        ... on Page_Flexiblecontent_Hero {
-          title
-          subtitle
-          image {
-            sourceUrl
-            altText
-            mediaDetails {
-              width
-              height
+export const GET_PAGE_BY_URI = `
+  query GetPageByUri($uri: String!) {
+    nodeByUri(uri: $uri) {
+      ... on Page {
+        id
+        title
+        uri
+        content
+        pageBuilderData {
+          pageBuilder {
+            __typename
+            fieldGroupName
+            ... on PageBuilderDataPageBuilderHeroBlockLayout {
+              title
+              image {
+                node {
+                  sourceUrl
+                  altText
+                }
+              }
+            }
+            ... on PageBuilderDataPageBuilderTextBlockLayout {
+              content
             }
           }
-          ctaText
-          ctaLink
         }
-        ... on Page_Flexiblecontent_RichText {
-          content
+      }
+    }
+  }
+`;
+
+/**
+ * Alternativa: query por lista de páginas filtrada por uri.
+ * Algunos esquemas WPGraphQL exponen pages(where: { uri: $uri }).
+ */
+export const GET_PAGES_BY_URI = `
+  query GetPagesByUri($uri: String!) {
+    pages(where: { uri: $uri }) {
+      nodes {
+        id
+        title
+        uri
+        content
+        pageBuilderData {
+          pageBuilder {
+            __typename
+            fieldGroupName
+            ... on PageBuilderDataPageBuilderHeroBlockLayout {
+              title
+              image {
+                node {
+                  sourceUrl
+                  altText
+                }
+              }
+            }
+            ... on PageBuilderDataPageBuilderTextBlockLayout {
+              content
+            }
+          }
         }
       }
     }
@@ -119,18 +162,106 @@ export const GET_MENU = `
 `;
 
 /**
- * Helper para obtener una página por slug
+ * Normaliza el slug de la ruta a la URI que espera WordPress.
+ * Ruta vacía o ['home'] → página principal (/ o /home/).
  */
-export async function getPageBySlug(slug: string) {
-  return fetchGraphQL<{
-    pageBy: {
+export function normalizeSlugToUri(slug: string[] | undefined | null): string {
+  if (!slug || slug.length === 0) {
+    return '/home/';
+  }
+  const first = slug[0].toLowerCase();
+  if (first === 'home') {
+    return '/home/';
+  }
+  const path = '/' + slug.join('/');
+  return path.endsWith('/') ? path : path + '/';
+}
+
+/** Respuesta de página con Page Builder (nodeByUri) */
+export interface PageByUriResult {
+  nodeByUri: {
+    id: string;
+    title: string;
+    uri: string;
+    content: string;
+    pageBuilderData?: {
+      pageBuilder: PageBuilderBlock[] | null;
+    };
+  } | null;
+}
+
+/** Respuesta de página con Page Builder (pages.nodes) */
+export interface PagesByUriResult {
+  pages: {
+    nodes: Array<{
       id: string;
       title: string;
-      slug: string;
+      uri: string;
       content: string;
-      flexibleContent: unknown[];
+      pageBuilderData?: {
+        pageBuilder: PageBuilderBlock[] | null;
+      };
+    }>;
+  };
+}
+
+/**
+ * Obtiene una página por slug/uri desde la API GraphQL.
+ * Usa ISR con revalidate: 60 (los cambios en WP se reflejan en el front como máximo cada minuto).
+ * Slug vacío o ['home'] se considera la página principal.
+ */
+export async function getPageBySlug(slug: string[] | undefined | null): Promise<{
+  id: string;
+  title: string;
+  uri: string;
+  content: string;
+  pageBuilder: PageBuilderBlock[] | null;
+} | null> {
+  const uri = normalizeSlugToUri(slug);
+
+  try {
+    const data = await fetchGraphQL<PageByUriResult>(
+      GET_PAGE_BY_URI,
+      { uri },
+      { revalidate: 60 }
+    );
+
+    const page = data.nodeByUri;
+    if (!page) {
+      return null;
+    }
+
+    return {
+      id: page.id,
+      title: page.title,
+      uri: page.uri,
+      content: page.content,
+      pageBuilder: page.pageBuilderData?.pageBuilder ?? null,
     };
-  }>(GET_PAGE_BY_SLUG, { slug });
+  } catch {
+    try {
+      const data = await fetchGraphQL<PagesByUriResult>(
+        GET_PAGES_BY_URI,
+        { uri },
+        { revalidate: 60 }
+      );
+
+      const node = data.pages?.nodes?.[0];
+      if (!node) {
+        return null;
+      }
+
+      return {
+        id: node.id,
+        title: node.title,
+        uri: node.uri,
+        content: node.content,
+        pageBuilder: node.pageBuilderData?.pageBuilder ?? null,
+      };
+    } catch {
+      return null;
+    }
+  }
 }
 
 /**

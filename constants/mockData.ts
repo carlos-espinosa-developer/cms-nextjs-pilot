@@ -1,6 +1,13 @@
 import type { PageBuilderBlock } from '@/types/wordpress';
 
 /**
+ * DOCUMENTACIÓN / REFERENCIA
+ * La app se conecta solo a la API (getPageBySlug en lib/wp-api.ts).
+ * Este archivo y realData.json se mantienen como referencia de la forma
+ * de los datos del page builder (fieldGroupName, image.node, etc.).
+ */
+
+/**
  * Datos mock que simulan la respuesta del page builder de WordPress
  * (misma forma que realData.json: fieldGroupName, image.node, etc.)
  */
@@ -25,16 +32,14 @@ export const mockPageBuilderBlocks: PageBuilderBlock[] = [
 ];
 
 /**
- * Devuelve bloques del page builder (mock).
- * Para usar data real, importa getPageBuilderBlocksFromRealData desde este archivo o desde la API.
+ * Devuelve bloques mock. Solo para tests o documentación; la app no lo usa.
  */
 export function getPageBuilderBlocks(): PageBuilderBlock[] {
   return mockPageBuilderBlocks;
 }
 
 /**
- * Devuelve bloques desde realData.json por uri (ej. "/home/").
- * Útil para desarrollo con data real sin API.
+ * Devuelve bloques desde realData.json por uri. Solo para referencia; la app no lo usa.
  */
 export function getPageBuilderBlocksFromRealData(
   uri: string

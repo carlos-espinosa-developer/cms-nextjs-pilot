@@ -10,6 +10,21 @@ interface NavbarProps {
 }
 
 /**
+ * Convierte la URL de WordPress (absoluta) en ruta relativa para Next.js.
+ * Elimina el dominio base y deja solo pathname (ej. https://site.com/home/ → /home/).
+ */
+function formatUrl(url: string): string {
+  if (!url || url === '#') return '/';
+  if (url.startsWith('/')) return url;
+  try {
+    const parsed = new URL(url);
+    return parsed.pathname || '/';
+  } catch {
+    return url;
+  }
+}
+
+/**
  * Navbar - Componente de navegación dinámico desde WordPress
  * 
  * Características:
@@ -51,13 +66,9 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
   };
 
   const isActiveLink = (url: string) => {
-    if (!url) return false;
-    try {
-      const urlPath = new URL(url).pathname;
-      return pathname === urlPath || pathname.startsWith(urlPath + '/');
-    } catch {
-      return pathname === url;
-    }
+    const path = formatUrl(url);
+    if (!path || path === '#') return false;
+    return pathname === path || pathname.startsWith(path + '/');
   };
 
   const renderMenuItem = (item: MenuItemWithChildren, depth: number = 0) => {
@@ -132,7 +143,7 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
     return (
       <li key={item.id}>
         <Link
-          href={item.url || '#'}
+          href={formatUrl(item.url || '#')}
           className={`${baseStyles} ${activeStyles} block`}
           onClick={closeMobileMenu}
         >
