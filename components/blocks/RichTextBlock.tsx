@@ -1,12 +1,11 @@
-import { type RichTextLayout } from '@/types/wordpress';
-
-interface RichTextBlockProps extends RichTextLayout {}
+import { type TextBlockProps } from '@/types/wordpress';
 
 /**
- * RichTextBlock - Componente de bloque de texto enriquecido
- * Renderiza contenido HTML de WordPress de forma segura
+ * TextBlock (RichTextBlock) - Componente de bloque de texto enriquecido.
+ * Recibe content (string) y lo renderiza con estilos de editor WordPress
+ * usando @tailwindcss/typography (prose prose-lg max-w-none).
  */
-export function RichTextBlock({ content }: RichTextBlockProps) {
+export function RichTextBlock({ content }: TextBlockProps) {
   if (!content) {
     return null;
   }
@@ -14,7 +13,7 @@ export function RichTextBlock({ content }: RichTextBlockProps) {
   return (
     <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div
-        className="prose prose-lg dark:prose-invert max-w-none
+        className="prose prose-lg max-w-none dark:prose-invert
           prose-headings:text-gray-900 dark:prose-headings:text-gray-100
           prose-p:text-gray-700 dark:prose-p:text-gray-300
           prose-ul:text-gray-700 dark:prose-ul:text-gray-300
@@ -26,4 +25,3 @@ export function RichTextBlock({ content }: RichTextBlockProps) {
     </section>
   );
 }
-

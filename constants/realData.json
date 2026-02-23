@@ -1,0 +1,47 @@
+{
+  "data": {
+    "pages": {
+      "nodes": [
+        {
+          "title": "Home",
+          "uri": "/home/",
+          "pageBuilderData": {
+            "pageBuilder": [
+              {
+                "__typename": "PageBuilderDataPageBuilderHeroBlockLayout",
+                "fieldGroupName": "PageBuilderDataPageBuilderHeroBlockLayout",
+                "title": "Grupo Bolivar",
+                "image": {
+                  "node": {
+                    "sourceUrl": "https://dev-sostenibilidad.segurosbolivar.com/wp-content/uploads/2026/02/23184542/bannerHome.jpg",
+                    "altText": ""
+                  }
+                }
+              },
+              {
+                "__typename": "PageBuilderDataPageBuilderTextBlockLayout",
+                "fieldGroupName": "PageBuilderDataPageBuilderTextBlockLayout",
+                "content": "<h2>Nuestra Historia</h2>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\n<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>\n<h3>Nuestros Valores</h3>\n<ul>\n<li>Innovación constante</li>\n<li>Compromiso con la calidad</li>\n<li>Atención al cliente</li>\n<li>Sostenibilidad</li>\n</ul>\n"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Página de ejemplo",
+          "uri": "/pagina-ejemplo/",
+          "pageBuilderData": {
+            "pageBuilder": null
+          }
+        }
+      ]
+    }
+  },
+  "extensions": {
+    "debug": [
+      {
+        "type": "DEBUG_LOGS_INACTIVE",
+        "message": "GraphQL Debug logging is not active. To see debug logs, GRAPHQL_DEBUG must be enabled."
+      }
+    ]
+  }
+}

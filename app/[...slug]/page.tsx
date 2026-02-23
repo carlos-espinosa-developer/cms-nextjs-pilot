@@ -1,5 +1,16 @@
 import { BlockRenderer } from '@/components/BlockRenderer';
-import { getPageBuilderBlocks } from '@/constants/mockData';
+import {
+  getPageBuilderBlocks,
+  getPageBuilderBlocksFromRealData,
+} from '@/constants/mockData';
+import type { PageBuilderBlock } from '@/types/wordpress';
+
+function getBlocks(slug: string[]): PageBuilderBlock[] {
+  const path = slug?.length ? `/${slug.join('/')}/` : '/home/';
+  const realBlocks = getPageBuilderBlocksFromRealData(path);
+  if (realBlocks?.length) return realBlocks;
+  return getPageBuilderBlocks();
+}
 
 interface PageProps {
   params: {
@@ -16,8 +27,7 @@ interface PageProps {
  * @param params - Parámetros de la ruta (slug)
  */
 export default function DynamicPage({ params }: PageProps) {
-  // Obtener los bloques del page_builder (mock data por ahora)
-  const blocks = getPageBuilderBlocks();
+  const blocks = getBlocks(params.slug ?? []);
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900">

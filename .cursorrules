@@ -1,4 +1,4 @@
-# Reglas de Arquitectura: Headless WP + Next.js Dynamic Builder
+# Reglas de Arquitectura: Headless WP + Next.js Dynamic Builder (SCF Edition)
 
 ## Estándares de Código
 - Framework: Next.js 14+ (App Router).
@@ -6,35 +6,38 @@
 - Estilos: Tailwind CSS (Mobile-first).
 - Componentes: Funcionales, con exportación nombrada.
 
-## Patrón de Diseño: Dynamic Block Renderer
+## Patrón de Diseño: Dynamic Block Renderer (SCF Integration)
+- Gestión de Contenidos: Se utiliza **SCF (Secure Custom Fields)** para definir los campos.
+- Integración de Datos: Se utiliza **WPGraphQL** junto con **WPGraphQL for ACF** para exponer los datos (SCF mantiene compatibilidad con la estructura de datos de ACF).
 - Todos los componentes de página provenientes de WordPress deben residir en `@/components/blocks`.
-- El mapeo entre ACF y React debe centralizarse en un archivo `mapping.ts`.
-- Usa 'Next/Image' para todas las imágenes externas de WordPress configurando el dominio en next.config.js.
+- El mapeo entre los layouts de SCF y React debe centralizarse en un archivo `@/components/BlockRenderer.tsx` o un `mapping.ts` dedicado.
+- Usa 'Next/Image' para todas las imágenes externas de WordPress. Configura los dominios (WP y AWS S3) en `next.config.js`.
 
 ## Seguridad y Optimización
-- Valida los datos de la API antes de renderizar.
-- Implementa Error Boundaries por cada bloque dinámico para evitar que un fallo en un componente rompa toda la página.
-- Usa `revalidatePath` o `revalidateTag` para el manejo de caché de WPGraphQL.
+- Validación: Valida los datos de la API antes de renderizar (Zod opcional pero recomendado).
+- Resiliencia: Implementa Error Boundaries por cada bloque dinámico para evitar que un fallo en un componente rompa toda la página.
+- Cache: Usa `revalidatePath` o `revalidateTag` de Next.js para el manejo de caché de las peticiones a WPGraphQL.
+- Sanitización: Utiliza `isomorphic-dompurify` para renderizar cualquier HTML proveniente de editores WYSIWYG de WordPress.
 
 ## Convención de Nombres
 - Componentes de Bloque: [Name]Block.tsx (ej. HeroBlock.tsx).
-- Tipos de GraphQL: [Name]Fields.ts.
+- Identificadores de SCF: Deben coincidir exactamente con las claves del diccionario en el Frontend.
+- Tipos de GraphQL: [Name]Fields.ts o interfaces dentro de `types/wordpress.ts`.
 
 ## Estructura de carpetas
-
 ├── app/
-│   ├── [...slug]/         <-- Catch-all route para páginas de WP
-│   │   └── page.tsx       <-- Aquí se llama al BlockRenderer
-│   ├── layout.tsx         <-- Aquí vive el Navbar (Menú WP)
+│   ├── [...slug]/         <-- Catch-all route para páginas dinámicas de WordPress
+│   │   └── page.tsx       <-- Punto de entrada del BlockRenderer
+│   ├── layout.tsx         <-- Inyección del Navbar (Menú Nativo de WP)
 │   └── globals.css
 ├── components/
-│   ├── blocks/            <-- Componentes que coinciden con ACF
+│   ├── blocks/            <-- Unidades visuales que mapean a layouts de SCF
 │   │   ├── HeroBlock.tsx
 │   │   ├── SliderBlock.tsx
 │   │   └── TextBlock.tsx
-│   ├── BlockRenderer.tsx  <-- El "Cerebro" que mapea el JSON
-│   └── Navbar.tsx         <-- Menú dinámico
+│   ├── BlockRenderer.tsx  <-- Lógica de mapeo dinámico (Switch/Dictionary)
+│   └── Navbar.tsx         <-- Menú dinámico consumido vía WPGraphQL
 ├── lib/
-│   └── wp-api.ts          <-- Cliente fetch y queries GraphQL
+│   └── wp-api.ts          <-- Cliente fetch optimizado para GraphQL
 └── types/
-    └── wordpress.ts       <-- Interfaces de TS para ACF y Menús
+    └── wordpress.ts       <-- Interfaces de TypeScript para SCF, Menús y Media

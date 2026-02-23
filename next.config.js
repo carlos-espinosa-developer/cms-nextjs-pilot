@@ -5,6 +5,8 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+        hostname: 'dev-sostenibilidad.segurosbolivar.com',
+        pathname: '**',
       },
       // Agregar aquí el dominio de tu WordPress cuando lo configures
       // {

@@ -11,6 +11,70 @@ export interface FlexibleContentLayout {
   fieldGroupName: string;
 }
 
+// ---------------------------------------------------------------------------
+// Props de componentes (alineados con data real de WordPress / realData.json)
+// ---------------------------------------------------------------------------
+
+/**
+ * Props del bloque Hero según respuesta real de WPGraphQL.
+ * La imagen viene anidada en image.node
+ */
+export interface HeroBlockProps {
+  title?: string;
+  image?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+}
+
+/**
+ * Props del bloque de texto según respuesta real de WPGraphQL.
+ */
+export interface TextBlockProps {
+  content?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Tipos de Page Builder (WPGraphQL / realData.json)
+// ---------------------------------------------------------------------------
+
+/**
+ * Layout Hero del Page Builder - coincide con __typename en realData.json
+ */
+export interface PageBuilderDataPageBuilderHeroBlockLayout {
+  __typename: 'PageBuilderDataPageBuilderHeroBlockLayout';
+  fieldGroupName: 'PageBuilderDataPageBuilderHeroBlockLayout';
+  title?: string;
+  image?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+}
+
+/**
+ * Layout Text del Page Builder - coincide con __typename en realData.json
+ */
+export interface PageBuilderDataPageBuilderTextBlockLayout {
+  __typename: 'PageBuilderDataPageBuilderTextBlockLayout';
+  fieldGroupName: 'PageBuilderDataPageBuilderTextBlockLayout';
+  content?: string;
+}
+
+/**
+ * Unión de todos los bloques del page builder (data real)
+ */
+export type PageBuilderBlock =
+  | PageBuilderDataPageBuilderHeroBlockLayout
+  | PageBuilderDataPageBuilderTextBlockLayout;
+
+// ---------------------------------------------------------------------------
+// Tipos legacy (Flexible Content anterior)
+// ---------------------------------------------------------------------------
+
 /**
  * Layout Hero - Bloque hero con imagen, título, subtítulo y CTA
  */
@@ -72,6 +136,21 @@ export function isRichTextBlock(
     block.fieldGroupName === 'page_flexiblecontent_richtext' ||
     block.fieldGroupName === 'Page_Flexiblecontent_RichText'
   );
+}
+
+/**
+ * Tipo guard para bloques del Page Builder real
+ */
+export function isPageBuilderHeroBlock(
+  block: PageBuilderBlock
+): block is PageBuilderDataPageBuilderHeroBlockLayout {
+  return block.fieldGroupName === 'PageBuilderDataPageBuilderHeroBlockLayout';
+}
+
+export function isPageBuilderTextBlock(
+  block: PageBuilderBlock
+): block is PageBuilderDataPageBuilderTextBlockLayout {
+  return block.fieldGroupName === 'PageBuilderDataPageBuilderTextBlockLayout';
 }
 
 /**
