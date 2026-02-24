@@ -37,6 +37,7 @@ function formatUrl(url: string): string {
 export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
   const [menuItems, setMenuItems] = useState<MenuItemWithChildren[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openSubmenuId, setOpenSubmenuId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
 
@@ -63,6 +64,11 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+    setOpenSubmenuId(null);
+  };
+
+  const toggleSubmenu = (itemId: string) => {
+    setOpenSubmenuId((prev) => (prev === itemId ? null : itemId));
   };
 
   const isActiveLink = (url: string) => {
@@ -86,26 +92,49 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
       : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400';
 
     if (hasChildren) {
+      const isSubmenuOpen = openSubmenuId === item.id;
+
       return (
         <li key={item.id} className="relative group">
-          <button
-            className={`${baseStyles} ${activeStyles} flex items-center gap-1 w-full`}
-            onClick={() => {
-              // En móvil, toggle del submenú
-              if (window.innerWidth < 1024) {
-                const submenu = document.getElementById(`submenu-${item.id}`);
-                if (submenu) {
-                  submenu.classList.toggle('hidden');
-                }
-              }
-            }}
-          >
-            <span>{item.label}</span>
+          <div className="flex items-center">
+            <Link
+              href={formatUrl(item.url || '#')}
+              className={`${baseStyles} ${activeStyles} flex items-center gap-1 min-w-0 flex-1`}
+              onClick={closeMobileMenu}
+            >
+              {item.label}
+            </Link>
+            <button
+              type="button"
+              className="lg:hidden p-2 -m-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-current"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSubmenu(item.id);
+              }}
+              aria-expanded={isSubmenuOpen}
+              aria-label={isSubmenuOpen ? 'Cerrar submenú' : 'Abrir submenú'}
+            >
+              <svg
+                className={`w-4 h-4 transition-transform duration-200 ${isSubmenuOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
             <svg
-              className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180"
+              className="hidden lg:block w-4 h-4 flex-shrink-0 text-current pointer-events-none transition-transform duration-200 group-hover:rotate-180"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden
             >
               <path
                 strokeLinecap="round"
@@ -114,12 +143,12 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
                 d="M19 9l-7 7-7-7"
               />
             </svg>
-          </button>
+          </div>
 
-          {/* Submenú Desktop */}
+          {/* Submenú Desktop: solo ventana flotante en lg; en móvil no se muestra */}
           <ul
             className={`
-              absolute left-0 mt-1 w-56 bg-white dark:bg-gray-800 
+              hidden lg:block absolute left-0 mt-1 w-56 bg-white dark:bg-gray-800 
               rounded-lg shadow-lg border border-gray-200 dark:border-gray-700
               opacity-0 invisible group-hover:opacity-100 group-hover:visible
               transition-all duration-200 z-50
@@ -132,7 +161,7 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
           {/* Submenú Mobile */}
           <ul
             id={`submenu-${item.id}`}
-            className="hidden lg:hidden pl-4 mt-1 space-y-1"
+            className={`lg:hidden pl-4 mt-1 space-y-1 ${isSubmenuOpen ? 'block' : 'hidden'}`}
           >
             {item.children!.map((child) => renderMenuItem(child, depth + 1))}
           </ul>

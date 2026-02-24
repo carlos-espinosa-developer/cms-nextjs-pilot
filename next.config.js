@@ -8,11 +8,6 @@ const nextConfig = {
         hostname: 'dev-sostenibilidad.segurosbolivar.com',
         pathname: '**',
       },
-      // Agregar aquí el dominio de tu WordPress cuando lo configures
-      // {
-      //   protocol: 'https',
-      //   hostname: 'tudominio.com',
-      // },
     ],
     // Deshabilitar optimización de imágenes en desarrollo si hay problemas con SSL
     unoptimized: process.env.NODE_ENV === 'development',
