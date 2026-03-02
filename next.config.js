@@ -6,8 +6,13 @@ const nextConfig = {
       { protocol: 'https', hostname: 'dev-sostenibilidad.segurosbolivar.com', pathname: '/**' },
       { protocol: 'https', hostname: 'dev-portales.segurosbolivar.com', pathname: '/**' },
     ],
-    // Deshabilitar optimización de imágenes en desarrollo si hay problemas con SSL
     unoptimized: process.env.NODE_ENV === 'development',
+  },
+  async redirects() {
+    return [
+      { source: '/home', destination: '/', permanent: true },
+      { source: '/home/', destination: '/', permanent: true },
+    ];
   },
 };
 
