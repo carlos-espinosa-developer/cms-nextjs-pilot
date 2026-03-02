@@ -36,6 +36,22 @@ export interface TextBlockProps {
   content?: string;
 }
 
+/**
+ * Props del bloque Label + Imagen (dos columnas: texto + imagen).
+ */
+export interface LabelImageBlockProps {
+  title?: string;
+  content?: string;
+  background_color?: string;
+  image?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+  text_color?: string;
+}
+
 // ---------------------------------------------------------------------------
 // Tipos de Page Builder (WPGraphQL / realData.json)
 // ---------------------------------------------------------------------------
@@ -65,11 +81,30 @@ export interface PageBuilderDataPageBuilderTextBlockLayout {
 }
 
 /**
+ * Layout Label + Imagen del Page Builder (dos columnas, fondo personalizado)
+ */
+export interface PageBuilderDataPageBuilderLabelImageBlockLayout {
+  __typename: 'PageBuilderDataPageBuilderLabelImageBlockLayout';
+  fieldGroupName: 'PageBuilderDataPageBuilderLabelImageBlockLayout';
+  title?: string;
+  content?: string;
+  background_color?: string;
+  image?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+  text_color?: string;
+}
+
+/**
  * Unión de todos los bloques del page builder (data real)
  */
 export type PageBuilderBlock =
   | PageBuilderDataPageBuilderHeroBlockLayout
-  | PageBuilderDataPageBuilderTextBlockLayout;
+  | PageBuilderDataPageBuilderTextBlockLayout
+  | PageBuilderDataPageBuilderLabelImageBlockLayout;
 
 // ---------------------------------------------------------------------------
 // Tipos legacy (Flexible Content anterior)
@@ -151,6 +186,12 @@ export function isPageBuilderTextBlock(
   block: PageBuilderBlock
 ): block is PageBuilderDataPageBuilderTextBlockLayout {
   return block.fieldGroupName === 'PageBuilderDataPageBuilderTextBlockLayout';
+}
+
+export function isPageBuilderLabelImageBlock(
+  block: PageBuilderBlock
+): block is PageBuilderDataPageBuilderLabelImageBlockLayout {
+  return block.fieldGroupName === 'PageBuilderDataPageBuilderLabelImageBlockLayout';
 }
 
 /**

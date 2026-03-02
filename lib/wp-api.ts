@@ -102,6 +102,18 @@ export const GET_PAGE_BY_URI = `
             ... on PageBuilderDataPageBuilderTextBlockLayout {
               content
             }
+            ... on PageBuilderDataPageBuilderLabelImageBlockLayout {
+              title
+              content
+              background_color
+              text_color
+              image {
+                node {
+                  sourceUrl
+                  altText
+                }
+              }
+            }
           }
         }
       }
@@ -136,6 +148,18 @@ export const GET_PAGES_BY_URI = `
             }
             ... on PageBuilderDataPageBuilderTextBlockLayout {
               content
+            }
+            ... on PageBuilderDataPageBuilderLabelImageBlockLayout {
+              title
+              content
+              background_color
+              text_color
+              image {
+                node {
+                  sourceUrl
+                  altText
+                }
+              }
             }
           }
         }

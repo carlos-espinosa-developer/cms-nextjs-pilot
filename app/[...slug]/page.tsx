@@ -18,12 +18,12 @@ export default async function DynamicPage({ params }: PageProps) {
 
   if (!page) {
     return (
-      <main className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+      <main className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center px-4">
-          <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+          <h1 className="text-2xl font-semibold text-black">
             Página no encontrada
           </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-gray-600">
             No existe contenido para esta ruta en WordPress.
           </p>
         </div>
@@ -32,12 +32,12 @@ export default async function DynamicPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-900">
+    <main className="min-h-screen bg-white">
       <BlockRenderer blocks={blocks} />
 
       {process.env.NODE_ENV === 'development' && (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 text-sm">
+          <div className="bg-gray-100 rounded-lg p-4 text-sm text-black">
             <p className="font-semibold mb-2">Debug Info:</p>
             <p>Slug: {params.slug?.join('/') || 'home'}</p>
             <p>Título: {page.title}</p>
@@ -46,7 +46,7 @@ export default async function DynamicPage({ params }: PageProps) {
               <summary className="cursor-pointer font-semibold">
                 Ver estructura de bloques
               </summary>
-              <pre className="mt-2 p-2 bg-gray-200 dark:bg-gray-900 rounded overflow-auto text-xs">
+              <pre className="mt-2 p-2 bg-gray-200 rounded overflow-auto text-xs text-black">
                 {JSON.stringify(blocks, null, 2)}
               </pre>
             </details>

@@ -2,11 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { getMenu, buildMenuHierarchy, type MenuItemWithChildren } from '@/lib/wp-api';
 
 interface NavbarProps {
   menuLocation?: 'PRIMARY' | 'FOOTER';
+  /** URL del logo (desde WordPress Media). Si no se pasa, se muestra el texto "Logo". */
+  logoUrl?: string;
+  logoAlt?: string;
 }
 
 /**
@@ -34,7 +38,7 @@ function formatUrl(url: string): string {
  * - Indicador de página activa
  * - Carga asíncrona del menú desde WordPress
  */
-export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
+export function Navbar({ menuLocation = 'PRIMARY', logoUrl, logoAlt = 'Logo' }: NavbarProps) {
   const [menuItems, setMenuItems] = useState<MenuItemWithChildren[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubmenuId, setOpenSubmenuId] = useState<string | null>(null);
@@ -88,8 +92,8 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
       : 'px-3 py-2 text-sm transition-colors duration-200';
 
     const activeStyles = isActive
-      ? 'text-blue-600 dark:text-blue-400'
-      : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400';
+      ? 'text-blue-600'
+      : 'text-black hover:text-blue-600';
 
     if (hasChildren) {
       const isSubmenuOpen = openSubmenuId === item.id;
@@ -106,7 +110,7 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
             </Link>
             <button
               type="button"
-              className="lg:hidden p-2 -m-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-current"
+              className="lg:hidden p-2 -m-2 rounded hover:bg-gray-100 text-current"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -148,8 +152,8 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
           {/* Submenú Desktop: solo ventana flotante en lg; en móvil no se muestra */}
           <ul
             className={`
-              hidden lg:block absolute left-0 mt-1 w-56 bg-white dark:bg-gray-800 
-              rounded-lg shadow-lg border border-gray-200 dark:border-gray-700
+              hidden lg:block absolute left-0 mt-1 w-56 bg-white 
+              rounded-lg shadow-lg border border-gray-200
               opacity-0 invisible group-hover:opacity-100 group-hover:visible
               transition-all duration-200 z-50
               ${isTopLevel ? 'top-full' : 'top-0 left-full ml-1'}
@@ -178,7 +182,7 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
         >
           {item.label}
           {isActive && (
-            <span className="ml-2 w-1.5 h-1.5 bg-blue-600 dark:bg-blue-400 rounded-full inline-block" />
+            <span className="ml-2 w-1.5 h-1.5 bg-blue-600 rounded-full inline-block" />
           )}
         </Link>
       </li>
@@ -187,15 +191,15 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
 
   if (isLoading) {
     return (
-      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
             <div className="hidden md:flex space-x-4">
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"
+                  className="h-6 w-20 bg-gray-200 rounded animate-pulse"
                 />
               ))}
             </div>
@@ -210,16 +214,26 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
   }
 
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo/Brand */}
-          <div className="flex-shrink-0">
-            <Link
-              href="/"
-              className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
-              Logo
+          {/* Logo: desde WordPress Media (logoUrl) o texto por defecto */}
+          <div className="flex-shrink-0 flex items-center">
+            <Link href="/" className="block">
+              {logoUrl ? (
+                <Image
+                  src={logoUrl}
+                  alt={logoAlt}
+                  width={160}
+                  height={48}
+                  className="h-10 w-auto object-contain object-left"
+                  priority
+                />
+              ) : (
+                <span className="text-xl font-bold text-black hover:text-blue-600 transition-colors">
+                  Logo
+                </span>
+              )}
             </Link>
           </div>
 
@@ -231,7 +245,7 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className="lg:hidden p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="lg:hidden p-2 rounded-md text-black hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
@@ -270,7 +284,7 @@ export function Navbar({ menuLocation = 'PRIMARY' }: NavbarProps) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 dark:border-gray-800">
+          <div className="lg:hidden border-t border-gray-200">
             <ul className="px-2 pt-2 pb-3 space-y-1">
               {menuItems.map((item) => renderMenuItem(item))}
             </ul>

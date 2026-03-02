@@ -13,9 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
-      <body>
-        <Navbar />
+    <html lang="es" className="bg-white" suppressHydrationWarning>
+      <body className="bg-white text-black antialiased">
+        <Navbar
+          logoUrl={process.env.NEXT_PUBLIC_LOGO_URL ?? '/media/logo.png'}
+          logoAlt="Inicio"
+        />
         {children}
       </body>
     </html>

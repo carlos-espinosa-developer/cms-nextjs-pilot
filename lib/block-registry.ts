@@ -15,7 +15,7 @@ export function getComponentNameFromFieldGroup(fieldGroupName: string): string {
    * Úsalo solo si un nombre de SCF es muy raro y no quieres que se llame igual en el front.
    */
   const COMPONENT_OVERRIDES: Record<string, string> = {
-    'TextBlock': 'RichTextBlock', // Ejemplo: si en WP se llama TextBlock pero tu componente es RichTextBlock
+    'TextBlock': 'RichTextBlock', // WP TextBlockLayout → RichTextBlock
   };
   
   export function resolveBlockComponent(fieldGroupName: string): string {
