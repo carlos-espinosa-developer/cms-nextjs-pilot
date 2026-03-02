@@ -22,10 +22,10 @@ export function LabelImageBlock({
       className="w-full overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div
           className="grid grid-cols-1 lg:grid-cols-12 items-center
-            min-h-[300px]"
+            min-h-[457px]"
         >
           <div
             className="lg:col-span-7 flex flex-col justify-center order-2 lg:order-1 py-10 lg:py-12 lg:pr-10"
@@ -57,7 +57,7 @@ export function LabelImageBlock({
                   src={imageUrl}
                   alt={altText}
                   fill
-                  className="object-contain object-right"
+                  className="object-cover object-left"
                   sizes="(max-width: 1023px) 100vw, 45vw"
                 />
               </div>

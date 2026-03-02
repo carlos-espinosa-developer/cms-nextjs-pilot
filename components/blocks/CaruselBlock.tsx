@@ -21,7 +21,7 @@ export function CaruselBlock({
 
   return (
     <section className="w-full bg-white py-12 lg:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         {(title || subtitle) && (
           <header className="mb-8 lg:mb-10">
             {title && (
@@ -35,13 +35,11 @@ export function CaruselBlock({
           </header>
         )}
 
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-        >
+        <div className="flex flex-wrap gap-6 justify-center">
           {carusel.map((item, index) => (
             <article
               key={index}
-              className="w-full max-w-[320px] mx-auto sm:mx-0 rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm
+              className="w-full max-w-[320px] rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm
                 hover:shadow-md transition-shadow flex flex-col"
             >
                 {item.image?.node?.sourceUrl && (

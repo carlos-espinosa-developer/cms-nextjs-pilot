@@ -226,7 +226,7 @@ export function Navbar({ menuLocation = 'PRIMARY', logoUrl, logoAlt = 'Logo' }: 
                   alt={logoAlt}
                   width={160}
                   height={48}
-                  className="h-10 w-auto object-contain object-left"
+                  className="h-16 w-auto object-contain object-left"
                   priority
                 />
               ) : (
