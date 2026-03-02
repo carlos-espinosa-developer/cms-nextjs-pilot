@@ -114,6 +114,17 @@ export const GET_PAGE_BY_URI = `
                 }
               }
             }
+            ... on PageBuilderDataPageBuilderLabelNoImgBlockLayout {
+              title
+              align
+              background_color
+              image {
+                node {
+                  sourceUrl
+                  altText
+                }
+              }
+            }
             ... on PageBuilderDataPageBuilderCaruselBlockLayout {
               title
               subtitle
@@ -178,6 +189,17 @@ export const GET_PAGES_BY_URI = `
               content
               background_color
               text_color
+              image {
+                node {
+                  sourceUrl
+                  altText
+                }
+              }
+            }
+            ... on PageBuilderDataPageBuilderLabelNoImgBlockLayout {
+              title
+              align
+              background_color
               image {
                 node {
                   sourceUrl

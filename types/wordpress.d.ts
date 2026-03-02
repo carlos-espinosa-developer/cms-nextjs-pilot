@@ -37,6 +37,22 @@ export interface TextBlockProps {
 }
 
 /**
+ * Props del bloque Label sin contenido largo: solo título + imagen en banner.
+ * align: ["right"] = título a la derecha, imagen a la izquierda; ["left"] = al revés.
+ */
+export interface LabelNoImgBlockProps {
+  title?: string;
+  align?: string[];
+  background_color?: string;
+  image?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+}
+
+/**
  * Props del bloque Label + Imagen (dos columnas: texto + imagen).
  */
 export interface LabelImageBlockProps {
@@ -133,6 +149,23 @@ export interface PageBuilderDataPageBuilderLabelImageBlockLayout {
 }
 
 /**
+ * Layout Label sin imagen de contenido (banner: título + imagen, align left/right)
+ */
+export interface PageBuilderDataPageBuilderLabelNoImgBlockLayout {
+  __typename: 'PageBuilderDataPageBuilderLabelNoImgBlockLayout';
+  fieldGroupName: 'PageBuilderDataPageBuilderLabelNoImgBlockLayout';
+  title?: string;
+  align?: string[];
+  background_color?: string;
+  image?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+}
+
+/**
  * Layout Carrusel del Page Builder (título, subtítulo, items, botón)
  */
 export interface PageBuilderDataPageBuilderCaruselBlockLayout {
@@ -151,6 +184,7 @@ export type PageBuilderBlock =
   | PageBuilderDataPageBuilderHeroBlockLayout
   | PageBuilderDataPageBuilderTextBlockLayout
   | PageBuilderDataPageBuilderLabelImageBlockLayout
+  | PageBuilderDataPageBuilderLabelNoImgBlockLayout
   | PageBuilderDataPageBuilderCaruselBlockLayout;
 
 // ---------------------------------------------------------------------------
@@ -239,6 +273,12 @@ export function isPageBuilderLabelImageBlock(
   block: PageBuilderBlock
 ): block is PageBuilderDataPageBuilderLabelImageBlockLayout {
   return block.fieldGroupName === 'PageBuilderDataPageBuilderLabelImageBlockLayout';
+}
+
+export function isPageBuilderLabelNoImgBlock(
+  block: PageBuilderBlock
+): block is PageBuilderDataPageBuilderLabelNoImgBlockLayout {
+  return block.fieldGroupName === 'PageBuilderDataPageBuilderLabelNoImgBlockLayout';
 }
 
 export function isPageBuilderCaruselBlock(

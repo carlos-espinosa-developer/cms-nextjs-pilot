@@ -22,13 +22,13 @@ export function LabelImageBlock({
       className="w-full overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto pl-4 sm:pl-6 lg:pl-48">
         <div
           className="grid grid-cols-1 lg:grid-cols-12 items-center
             min-h-[457px]"
         >
           <div
-            className="lg:col-span-7 flex flex-col justify-center order-2 lg:order-1 py-10 lg:py-12 lg:pr-10"
+            className="max-w-[50rem] lg:col-span-7 flex flex-col justify-center order-2 lg:order-1 py-10 lg:py-12 lg:pr-10"
             style={{ color: textColor }}
           >
             {title && (
