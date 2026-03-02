@@ -52,6 +52,40 @@ export interface LabelImageBlockProps {
   text_color?: string;
 }
 
+/** Item del carrusel (título, texto, colores, imagen) */
+export interface CaruselItem {
+  title?: string;
+  text?: string;
+  text_color?: string;
+  title_color?: string;
+  image?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+}
+
+/** Botón opcional del bloque (nombre, colores) */
+export interface CaruselBoton {
+  name?: string;
+  text_color?: string;
+  background_color?: string;
+  url?: string;
+}
+
+/**
+ * Props del bloque Carrusel (título, subtítulo, lista de items, botón).
+ */
+export interface CaruselBlockProps {
+  title?: string;
+  text_color?: string;
+  title_color?: string;
+  subtitle?: string;
+  carusel?: CaruselItem[];
+  boton?: CaruselBoton;
+}
+
 // ---------------------------------------------------------------------------
 // Tipos de Page Builder (WPGraphQL / realData.json)
 // ---------------------------------------------------------------------------
@@ -99,12 +133,25 @@ export interface PageBuilderDataPageBuilderLabelImageBlockLayout {
 }
 
 /**
+ * Layout Carrusel del Page Builder (título, subtítulo, items, botón)
+ */
+export interface PageBuilderDataPageBuilderCaruselBlockLayout {
+  __typename: 'PageBuilderDataPageBuilderCaruselBlockLayout';
+  fieldGroupName: 'PageBuilderDataPageBuilderCaruselBlockLayout';
+  title?: string;
+  subtitle?: string;
+  carusel?: CaruselItem[];
+  boton?: CaruselBoton;
+}
+
+/**
  * Unión de todos los bloques del page builder (data real)
  */
 export type PageBuilderBlock =
   | PageBuilderDataPageBuilderHeroBlockLayout
   | PageBuilderDataPageBuilderTextBlockLayout
-  | PageBuilderDataPageBuilderLabelImageBlockLayout;
+  | PageBuilderDataPageBuilderLabelImageBlockLayout
+  | PageBuilderDataPageBuilderCaruselBlockLayout;
 
 // ---------------------------------------------------------------------------
 // Tipos legacy (Flexible Content anterior)
@@ -192,6 +239,12 @@ export function isPageBuilderLabelImageBlock(
   block: PageBuilderBlock
 ): block is PageBuilderDataPageBuilderLabelImageBlockLayout {
   return block.fieldGroupName === 'PageBuilderDataPageBuilderLabelImageBlockLayout';
+}
+
+export function isPageBuilderCaruselBlock(
+  block: PageBuilderBlock
+): block is PageBuilderDataPageBuilderCaruselBlockLayout {
+  return block.fieldGroupName === 'PageBuilderDataPageBuilderCaruselBlockLayout';
 }
 
 /**

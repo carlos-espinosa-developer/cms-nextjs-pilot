@@ -114,6 +114,30 @@ export const GET_PAGE_BY_URI = `
                 }
               }
             }
+            ... on PageBuilderDataPageBuilderCaruselBlockLayout {
+              title
+              subtitle
+              text_color
+              title_color
+              carusel {
+                title
+                text
+                text_color
+                title_color
+                image {
+                  node {
+                    sourceUrl
+                    altText
+                  }
+                }
+              }
+              boton {
+                name
+                text_color
+                background_color
+                url
+              }
+            }
           }
         }
       }
@@ -159,6 +183,30 @@ export const GET_PAGES_BY_URI = `
                   sourceUrl
                   altText
                 }
+              }
+            }
+            ... on PageBuilderDataPageBuilderCaruselBlockLayout {
+              title
+              subtitle
+              text_color
+              title_color
+              carusel {
+                title
+                text
+                text_color
+                title_color
+                image {
+                  node {
+                    sourceUrl
+                    altText
+                  }
+                }
+              }
+              boton {
+                name
+                text_color
+                background_color
+                url
               }
             }
           }
