@@ -22,7 +22,7 @@ export function LabelImageBlock({
       className="w-full overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="w-full mx-auto pl-4 sm:pl-6 lg:pl-48">
+      <div className="w-full mx-auto pl-4 sm:pl-6 lg:pl-12 2xl:pl-48">
         <div
           className="grid grid-cols-1 lg:grid-cols-12 items-center
             min-h-[457px]"
