@@ -149,6 +149,23 @@ export const GET_PAGE_BY_URI = `
                 url
               }
             }
+            ... on PageBuilderDataPageBuilderHistoryBlockLayout {
+              history {
+                year_tab
+                history_by_year {
+                  title
+                  subtitle
+                  title_color
+                  text
+                  image {
+                    node {
+                      sourceUrl
+                      altText
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -229,6 +246,23 @@ export const GET_PAGES_BY_URI = `
                 text_color
                 background_color
                 url
+              }
+            }
+            ... on PageBuilderDataPageBuilderHistoryBlockLayout {
+              history {
+                year_tab
+                history_by_year {
+                  title
+                  subtitle
+                  title_color
+                  text
+                  image {
+                    node {
+                      sourceUrl
+                      altText
+                    }
+                  }
+                }
               }
             }
           }

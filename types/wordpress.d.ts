@@ -90,6 +90,33 @@ export interface CaruselBoton {
   url?: string;
 }
 
+/** Evento de historia por año (título, subtítulo, texto, imagen) */
+export interface HistoryEventItem {
+  title?: string;
+  subtitle?: string;
+  title_color?: string;
+  text?: string;
+  image?: {
+    node: {
+      sourceUrl: string;
+      altText: string;
+    };
+  };
+}
+
+/** Pestaña de año en el timeline (year_tab + eventos) */
+export interface HistoryTabItem {
+  year_tab?: string;
+  history_by_year?: HistoryEventItem[];
+}
+
+/**
+ * Props del bloque History (timeline izquierda, eventos derecha).
+ */
+export interface HistoryBlockProps {
+  history?: HistoryTabItem[];
+}
+
 /**
  * Props del bloque Carrusel (título, subtítulo, lista de items, botón).
  */
@@ -178,6 +205,15 @@ export interface PageBuilderDataPageBuilderCaruselBlockLayout {
 }
 
 /**
+ * Layout History del Page Builder (timeline por años, eventos por año)
+ */
+export interface PageBuilderDataPageBuilderHistoryBlockLayout {
+  __typename: 'PageBuilderDataPageBuilderHistoryBlockLayout';
+  fieldGroupName: 'PageBuilderDataPageBuilderHistoryBlockLayout';
+  history?: HistoryTabItem[];
+}
+
+/**
  * Unión de todos los bloques del page builder (data real)
  */
 export type PageBuilderBlock =
@@ -185,7 +221,8 @@ export type PageBuilderBlock =
   | PageBuilderDataPageBuilderTextBlockLayout
   | PageBuilderDataPageBuilderLabelImageBlockLayout
   | PageBuilderDataPageBuilderLabelNoImgBlockLayout
-  | PageBuilderDataPageBuilderCaruselBlockLayout;
+  | PageBuilderDataPageBuilderCaruselBlockLayout
+  | PageBuilderDataPageBuilderHistoryBlockLayout;
 
 // ---------------------------------------------------------------------------
 // Tipos legacy (Flexible Content anterior)
@@ -285,6 +322,12 @@ export function isPageBuilderCaruselBlock(
   block: PageBuilderBlock
 ): block is PageBuilderDataPageBuilderCaruselBlockLayout {
   return block.fieldGroupName === 'PageBuilderDataPageBuilderCaruselBlockLayout';
+}
+
+export function isPageBuilderHistoryBlock(
+  block: PageBuilderBlock
+): block is PageBuilderDataPageBuilderHistoryBlockLayout {
+  return block.fieldGroupName === 'PageBuilderDataPageBuilderHistoryBlockLayout';
 }
 
 /**
